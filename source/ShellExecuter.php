@@ -142,7 +142,8 @@ class ShellExecuter
 	**/
 	private function cleanup() {
 		foreach($this->files as $file) {
-			@unlink($file);
+			if (file_exists($file))
+				unlink($file);
 		}
 	}
 }
