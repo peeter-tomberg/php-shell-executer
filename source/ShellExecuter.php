@@ -51,15 +51,25 @@ class ShellExecuter
 
 		$sleeptime = 100000;
 		$looptime = $this->timeout * 1000000 / $sleeptime;
+		$temp_dir = sys_get_temp_dir();
 
-		$this->files["pid"] 	= sys_get_temp_dir() . '/shellexecuter_pid' . $unique_id . '.txt';
-		$this->files["success"] = sys_get_temp_dir() . '/shellexecuter_success' . $unique_id . '.txt';
+		$this->files = array(
+			"pid" => $temp_dir . '/shellexecuter_pid' . $unique_id . '.txt',
+			"success" => $temp_dir . '/shellexecuter_success' . $unique_id . '.txt',
+		);
 
 		$descriptorspec    = array(
             1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'),
 		);
-	    $this->resource = proc_open("(" . $this->command . " && touch ".$this->files['success'].") & echo $! > ".$this->files['pid']." &" , $descriptorspec, $this->pipes, null, $_ENV);
+		$full_cmd = sprintf(
+			'(%s && touch %s) & echo $! > %s &',
+			$this->command,
+			$this->files['success'],
+			$this->files['pid']);
+
+		$this->resource = proc_open($full_cmd, $descriptorspec, $this->pipes, null, $_ENV);
+
 		/**
 		* Lets get the actual pid of the process we're backgrounding
 		* Since PHP doesn't run our process right away, lets sleep until we actually have a pid
@@ -75,16 +85,13 @@ class ShellExecuter
 		}
 
 		for($i = 0; $i <= $looptime; $i++) {
-
-			if($this->isRunning()) {
-				if($i == $looptime) {
-					$this->kill();
-				}
-				usleep($sleeptime);
-			}
-			else
+			if(!$this->isRunning())
 				break;
+			if($i == $looptime)
+				$this->kill();
+			usleep($sleeptime);
 		}
+
 		/**
 		* Lets gather some info from the pipes
 		**/
