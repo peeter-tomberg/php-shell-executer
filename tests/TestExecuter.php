@@ -1,29 +1,24 @@
 <?php
-
 require_once 'PHPUnit\Framework\TestCase.php';
 require_once '..\source\ShellExecuter.php';
+
 /**
  * test case.
  */
 class TestExecuter extends PHPUnit_Framework_TestCase {
 
-
 	/**
 	 * @expectedException Exception
 	 */
 	public function testFailure() {
-
 		$se = new ShellExecuter("sleep 5", 1);
 		$se->execute();
-
 	}
 
 	public function testOutput() {
-
 		$se = new ShellExecuter("echo hi");
 		$result = $se->execute();
 		$this->assertEquals("hi", $result, "Testing shell output");
-
 	}
 
 
@@ -31,9 +26,7 @@ class TestExecuter extends PHPUnit_Framework_TestCase {
 	 * Prepares the environment before running a test.
 	 */
 	protected function setUp() {
-
-		parent::setUp ();
-
+		parent::setUp();
 	}
 
 	/**
@@ -41,8 +34,7 @@ class TestExecuter extends PHPUnit_Framework_TestCase {
 	 */
 	protected function tearDown() {
 		// TODO Auto-generated Events::tearDown()
-
-		parent::tearDown ();
+		parent::tearDown();
 	}
 
 	/**
@@ -51,6 +43,5 @@ class TestExecuter extends PHPUnit_Framework_TestCase {
 	public function __construct() {
 		// TODO Auto-generated constructor
 	}
-
 }
 

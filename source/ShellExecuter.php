@@ -6,7 +6,6 @@
  */
 class ShellExecuter
 {
-
 	CONST DEFAULT_EXECUTE_TIMEOUT = 5;
 
 	/**
@@ -30,6 +29,7 @@ class ShellExecuter
 	* The pid of the process that is actually backgrounded
 	**/
 	private $pid;
+
 	/**
 	 *
 	 * Construct the ShellExecuter
@@ -41,6 +41,7 @@ class ShellExecuter
 		$this->command = $command;
 		$this->timeout = $timeout;
 	}
+
 	/**
 	 * Executes the command (blocking)
 	 * @throws Exception when timeout reached
@@ -58,8 +59,8 @@ class ShellExecuter
 			"success" => $temp_dir . '/shellexecuter_success' . $unique_id . '.txt',
 		);
 
-		$descriptorspec    = array(
-            1 => array('pipe', 'w'),
+		$descriptorspec = array(
+			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'),
 		);
 		$full_cmd = sprintf(
@@ -124,17 +125,18 @@ class ShellExecuter
 	private function isRunning(){
 		if($this->pid == null)
 			$this->fail("Pid not defined");
-
-        return file_exists( "/proc/$this->pid" );
+		return file_exists( "/proc/$this->pid" );
 	}
+
 	/**
 	 * Kills this process
 	 */
 	private function kill() {
-    	proc_terminate($this->resource);
+		proc_terminate($this->resource);
 		shell_exec("kill -9 " . $this->pid);
-		$this->fail("Exec timeout reached, process (".$this->pid.") killed. Command: " .$this->command);
+		$this->fail("Exec timeout reached, process (" . $this->pid . ") killed. Command: " . $this->command);
 	}
+
 	/**
 	* Lets remove all our created files
 	**/
@@ -143,7 +145,5 @@ class ShellExecuter
 			@unlink($file);
 		}
 	}
-
-
-
 }
+
